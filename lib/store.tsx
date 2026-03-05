@@ -55,7 +55,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select('id, name, description, price, image_url, available')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -102,7 +102,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase
         .from('products')
         .insert([dbProduct])
-        .select();
+        .select('id, name, description, price, image_url, available');
 
       if (error) {
         console.error('Supabase Error (Add):', error);
