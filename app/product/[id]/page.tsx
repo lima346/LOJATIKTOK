@@ -10,7 +10,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
   const { products, isLoading } = useStore();
   const [activeImage, setActiveImage] = useState(0);
@@ -48,9 +49,9 @@ export default function ProductDetail() {
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <button 
+        <button
           onClick={() => router.back()}
           className="mb-8 text-black/40 hover:text-black transition-colors flex items-center group"
         >
@@ -61,7 +62,7 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Product Image Gallery */}
           <div className="space-y-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="relative aspect-square bg-white rounded-3xl overflow-hidden border border-black/5 shadow-sm"
@@ -74,16 +75,15 @@ export default function ProductDetail() {
                 referrerPolicy="no-referrer"
               />
             </motion.div>
-            
+
             {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImage(idx)}
-                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                      activeImage === idx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
+                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
                   >
                     <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
                   </button>
@@ -102,9 +102,9 @@ export default function ProductDetail() {
                       allowFullScreen
                     />
                   ) : (
-                    <video 
-                      src={product.videoUrl} 
-                      controls 
+                    <video
+                      src={product.videoUrl}
+                      controls
                       className="absolute inset-0 w-full h-full object-contain"
                     />
                   )}
@@ -114,7 +114,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Product Info */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex flex-col h-full"
@@ -141,7 +141,7 @@ export default function ProductDetail() {
               </div>
 
               <div className="grid grid-cols-1 gap-4">
-                <a 
+                <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"

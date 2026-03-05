@@ -4,24 +4,17 @@ import { useState, useEffect } from 'react';
 import { useStore, Product } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingBag, 
-  Plus, 
-  Search, 
-  MoreVertical, 
-  Trash2, 
-  Edit, 
-  TrendingUp, 
-  Users, 
+import {
+  LayoutDashboard,
+  Package,
+  Plus,
+  Search,
+  Trash2,
+  Edit,
+  Users,
   ArrowUpRight,
-  CheckCircle2,
-  Clock,
   XCircle,
-  Truck,
   Menu,
-  X,
   LogOut
 } from 'lucide-react';
 import Image from 'next/image';
@@ -108,14 +101,14 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="flex-grow px-4 space-y-2 mt-4 md:mt-0">
-          <button 
+          <button
             onClick={() => { setActiveTab('dashboard'); setIsSidebarOpen(false); }}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'hover:bg-white/5 text-white/60'}`}
           >
             <LayoutDashboard className="w-5 h-5" />
             <span className="font-medium">Dashboard</span>
           </button>
-          <button 
+          <button
             onClick={() => { setActiveTab('products'); setIsSidebarOpen(false); }}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'products' ? 'bg-white text-black' : 'hover:bg-white/5 text-white/60'}`}
           >
@@ -125,7 +118,7 @@ export default function AdminDashboard() {
         </nav>
 
         <div className="p-8 border-t border-white/10 space-y-4">
-          <button 
+          <button
             onClick={handleLogout}
             className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-red-500/10 text-red-500"
           >
@@ -149,14 +142,14 @@ export default function AdminDashboard() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-              <input 
-                type="text" 
-                placeholder="Pesquisar..." 
+              <input
+                type="text"
+                placeholder="Pesquisar..."
                 className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm focus:border-white/40 outline-none transition-all"
               />
             </div>
             {activeTab === 'products' && (
-              <button 
+              <button
                 onClick={() => { setEditingProduct(null); setIsProductModalOpen(true); }}
                 className="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-white/90 transition-all flex items-center justify-center"
               >
@@ -179,7 +172,7 @@ export default function AdminDashboard() {
               <div className="w-8 h-8 border-4 border-white/10 border-t-white rounded-full animate-spin" />
             </motion.div>
           ) : activeTab === 'dashboard' ? (
-            <motion.div 
+            <motion.div
               key="dashboard"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -209,7 +202,7 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="products"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -235,13 +228,13 @@ export default function AdminDashboard() {
                       <span className={`ml-2 font-bold ${product.stock < 5 ? 'text-red-500' : 'text-white'}`}>{product.stock}</span>
                     </div>
                     <div className="flex space-x-2">
-                      <button 
+                      <button
                         onClick={() => { setEditingProduct(product); setIsProductModalOpen(true); }}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => deleteProduct(product.id)}
                         className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
                       >
@@ -260,14 +253,14 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {isProductModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsProductModalOpen(false)}
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -276,8 +269,8 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-display font-bold mb-6">
                 {editingProduct ? 'Editar Produto' : 'Novo Produto'}
               </h2>
-              <ProductForm 
-                initialData={editingProduct} 
+              <ProductForm
+                initialData={editingProduct}
                 isSubmitting={isSubmitting}
                 onSubmit={async (data) => {
                   setIsSubmitting(true);
@@ -285,7 +278,7 @@ export default function AdminDashboard() {
                     if (editingProduct) {
                       await updateProduct(editingProduct.id, data);
                     } else {
-                      await addProduct(data as any);
+                      await addProduct(data as Omit<Product, 'id'>);
                     }
                     setIsProductModalOpen(false);
                   } finally {
@@ -340,9 +333,9 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="sm:col-span-2">
           <label className="block text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Nome</label>
-          <input 
+          <input
             required
-            type="text" 
+            type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/40 transition-all"
@@ -350,9 +343,9 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
         </div>
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Preço (MT)</label>
-          <input 
+          <input
             required
-            type="number" 
+            type="number"
             step="0.01"
             value={formData.price}
             onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
@@ -361,9 +354,9 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
         </div>
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Estoque</label>
-          <input 
+          <input
             required
-            type="number" 
+            type="number"
             value={formData.stock}
             onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) })}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/40 transition-all"
@@ -371,8 +364,8 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
         </div>
         <div className="sm:col-span-2">
           <label className="block text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">URL do Vídeo (Opcional)</label>
-          <input 
-            type="url" 
+          <input
+            type="url"
             placeholder="https://youtube.com/watch?v=..."
             value={formData.videoUrl}
             onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
@@ -385,7 +378,7 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
             {formData.images && formData.images.map((img, idx) => (
               <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-white/10">
                 <Image src={img} alt="Preview" fill className="object-cover" />
-                <button 
+                <button
                   type="button"
                   onClick={() => removeImage(idx)}
                   className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
@@ -403,7 +396,7 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
         </div>
         <div className="sm:col-span-2">
           <label className="block text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Descrição</label>
-          <textarea 
+          <textarea
             required
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -412,7 +405,7 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
         </div>
       </div>
       <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-        <button 
+        <button
           type="submit"
           disabled={isSubmitting}
           className="flex-grow bg-white text-black py-4 rounded-xl font-bold hover:bg-white/90 transition-all order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
@@ -423,7 +416,7 @@ function ProductForm({ initialData, onSubmit, onCancel, isSubmitting }: { initia
             initialData ? 'Salvar Alterações' : 'Criar Produto'
           )}
         </button>
-        <button 
+        <button
           type="button"
           onClick={onCancel}
           className="px-6 py-4 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all order-2 sm:order-1"

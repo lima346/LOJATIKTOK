@@ -1,9 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, Package } from 'lucide-react';
+import { Menu, X, Package } from 'lucide-react';
 import { useState } from 'react';
-import { useStore } from '@/lib/store';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Navbar() {
@@ -29,7 +28,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Toggle */}
           <div className="md:hidden flex items-center">
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 hover:bg-black/5 rounded-full transition-colors"
             >
@@ -49,8 +48,8 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-black/5 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-4">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="block text-lg font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
