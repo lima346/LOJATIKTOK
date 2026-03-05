@@ -213,6 +213,17 @@ export default function AdminDashboard() {
                 <div key={product.id} className="bg-white/5 border border-white/10 rounded-3xl p-6 group relative">
                   <div className="relative aspect-square rounded-2xl overflow-hidden mb-4">
                     <Image src={(product.images && product.images.length > 0) ? product.images[0] : 'https://picsum.photos/seed/placeholder/400/400'} alt={product.name} fill className="object-cover" referrerPolicy="no-referrer" />
+                    <div className="absolute top-3 right-3">
+                      {product.stock > 0 ? (
+                        <span className="px-2 py-1 bg-emerald-500/20 text-emerald-500 text-[10px] font-bold rounded-lg backdrop-blur-md border border-emerald-500/20 uppercase">
+                          Ativo
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 bg-red-500/20 text-red-500 text-[10px] font-bold rounded-lg backdrop-blur-md border border-red-500/20 uppercase">
+                          Esgotado
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex justify-between items-start mb-2">
                     <div>

@@ -8,8 +8,9 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  images: string[]; // UI expects array
-  stock: number;    // UI expects number
+  images: string[];
+  stock: number;
+  videoUrl?: string;
 }
 
 interface StoreContextType {
@@ -70,8 +71,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           name: dbProd.name,
           description: dbProd.description,
           price: dbProd.price,
-          images: dbProd.image_url ? [dbProd.image_url] : [],
-          stock: dbProd.available ? 10 : 0 // Converte boolean para número simbólico
+          images: Array.isArray(dbProd.images) ? dbProd.images : (dbProd.image_url ? [dbProd.image_url] : []),
+          stock: dbProd.stock !== undefined ? dbProd.stock : (dbProd.available ? 10 : 0),
+          videoUrl: dbProd.videoUrl || ''
         }));
         setProducts(mappedProducts);
       } else {
@@ -95,8 +97,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         name: product.name,
         description: product.description,
         price: product.price,
-        image_url: product.images && product.images.length > 0 ? product.images[0] : '',
-        available: product.stock > 0
+        images: product.images,
+        stock: product.stock,
+        available: product.stock > 0,
+        videoUrl: product.videoUrl || ''
       };
 
       const { data, error } = await supabase
@@ -117,8 +121,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           name: data[0].name,
           description: data[0].description,
           price: data[0].price,
-          images: data[0].image_url ? [data[0].image_url] : [],
-          stock: data[0].available ? 10 : 0
+          images: Array.isArray(data[0].images) ? data[0].images : (data[0].image_url ? [data[0].image_url] : []),
+          stock: data[0].stock !== undefined ? data[0].stock : (data[0].available ? 10 : 0),
+          videoUrl: data[0].videoUrl || ''
         };
         setProducts([newProduct, ...products]);
       }
@@ -135,8 +140,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (updates.name) dbUpdates.name = updates.name;
       if (updates.description) dbUpdates.description = updates.description;
       if (updates.price !== undefined) dbUpdates.price = updates.price;
-      if (updates.images) dbUpdates.image_url = updates.images[0];
-      if (updates.stock !== undefined) dbUpdates.available = updates.stock > 0;
+      if (updates.images) dbUpdates.images = updates.images;
+      if (updates.stock !== undefined) {
+        dbUpdates.stock = updates.stock;
+        dbUpdates.available = updates.stock > 0;
+      }
+      if (updates.videoUrl !== undefined) dbUpdates.videoUrl = updates.videoUrl;
 
       const { error } = await supabase
         .from('products')

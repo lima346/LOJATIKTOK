@@ -81,10 +81,16 @@ export default function Home() {
                       src={(product.images && product.images.length > 0) ? product.images[0] : 'https://picsum.photos/seed/placeholder/400/400'}
                       alt={product.name}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className={`object-cover group-hover:scale-105 transition-transform duration-500 ${product.stock === 0 ? 'grayscale' : ''}`}
                       referrerPolicy="no-referrer"
                     />
-                    {product.stock < 5 && (
+                    {product.stock === 0 ? (
+                      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] flex items-center justify-center">
+                        <span className="px-3 py-1 bg-white text-black text-[10px] font-bold rounded-full uppercase tracking-widest shadow-xl">
+                          Esgotado
+                        </span>
+                      </div>
+                    ) : product.stock < 5 && (
                       <div className="absolute bottom-3 left-3">
                         <span className="px-2 py-0.5 bg-red-500 text-white text-[8px] font-bold rounded-md uppercase">
                           Poucas unidades
