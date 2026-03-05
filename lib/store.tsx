@@ -8,9 +8,8 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  images: string[];
-  stock: number;
-  videoUrl?: string;
+  images: string[]; // UI expects array
+  stock: number;    // UI expects number
 }
 
 interface StoreContextType {
@@ -65,10 +64,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data && data.length > 0) {
-        setProducts(data);
+        // Traduz do banco para a UI
+        const mappedProducts = data.map((dbProd: any) => ({
+          id: dbProd.id,
+          name: dbProd.name,
+          description: dbProd.description,
+          price: dbProd.price,
+          images: dbProd.image_url ? [dbProd.image_url] : [],
+          stock: dbProd.available ? 10 : 0 // Converte boolean para número simbólico
+        }));
+        setProducts(mappedProducts);
       } else {
-        // If no products in DB, we could seed them or just show empty
-        // For this demo, we'll just keep it empty if DB is empty
         setProducts([]);
       }
     } catch (err) {
@@ -84,19 +90,37 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const addProduct = async (product: Omit<Product, 'id'>) => {
     try {
+      // Traduz da UI para o Banco
+      const dbProduct = {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image_url: product.images && product.images.length > 0 ? product.images[0] : '',
+        available: product.stock > 0
+      };
+
       const { data, error } = await supabase
         .from('products')
-        .insert([product])
+        .insert([dbProduct])
         .select();
 
       if (error) {
         console.error('Supabase Error (Add):', error);
-        alert(`Erro do Banco: ${error.message} (Código: ${error.code})`);
+        alert(`Erro do Banco: ${error.message}`);
         return;
       }
 
       if (data) {
-        setProducts([data[0], ...products]);
+        // Mapeia de volta para a UI o item criado
+        const newProduct: Product = {
+          id: data[0].id,
+          name: data[0].name,
+          description: data[0].description,
+          price: data[0].price,
+          images: data[0].image_url ? [data[0].image_url] : [],
+          stock: data[0].available ? 10 : 0
+        };
+        setProducts([newProduct, ...products]);
       }
     } catch (err: any) {
       console.error('Unexpected Error:', err);
@@ -106,12 +130,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
     try {
-      // Remove id if it exists in updates to avoid Supabase error
-      const { id: _, ...payload } = updates as any;
+      // Traduz da UI para o Banco
+      const dbUpdates: any = {};
+      if (updates.name) dbUpdates.name = updates.name;
+      if (updates.description) dbUpdates.description = updates.description;
+      if (updates.price !== undefined) dbUpdates.price = updates.price;
+      if (updates.images) dbUpdates.image_url = updates.images[0];
+      if (updates.stock !== undefined) dbUpdates.available = updates.stock > 0;
 
       const { error } = await supabase
         .from('products')
-        .update(payload)
+        .update(dbUpdates)
         .eq('id', id);
 
       if (error) {
