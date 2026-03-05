@@ -89,28 +89,41 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         .insert([product])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Error (Add):', error);
+        alert(`Erro do Banco: ${error.message} (Código: ${error.code})`);
+        return;
+      }
+
       if (data) {
         setProducts([data[0], ...products]);
       }
-    } catch (err) {
-      console.error('Error adding product:', err);
-      alert('Erro ao adicionar produto no Supabase. Verifique as configurações.');
+    } catch (err: any) {
+      console.error('Unexpected Error:', err);
+      alert('Erro inesperado ao conectar com o banco de dados.');
     }
   };
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
     try {
+      // Remove id if it exists in updates to avoid Supabase error
+      const { id: _, ...payload } = updates as any;
+
       const { error } = await supabase
         .from('products')
-        .update(updates)
+        .update(payload)
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Error (Update):', error);
+        alert(`Erro ao atualizar: ${error.message}`);
+        return;
+      }
+
       setProducts(products.map(p => p.id === id ? { ...p, ...updates } : p));
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error updating product:', err);
-      alert('Erro ao atualizar produto.');
+      alert('Erro inesperado ao atualizar produto.');
     }
   };
 
