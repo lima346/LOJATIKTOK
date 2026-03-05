@@ -13,7 +13,12 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+
+      {/* Test Banner */}
+      <div className="bg-blue-600 text-white text-center py-2 text-sm font-bold">
+        🚀 Teste de Atualização: Vercel está sincronizado!
+      </div>
+
       {/* Hero Section */}
       <section className="relative min-h-[40vh] md:h-[30vh] flex items-center overflow-hidden bg-white">
         <div className="absolute inset-0 z-0 opacity-10">
@@ -23,7 +28,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-12 md:py-0">
           <div className="max-w-2xl">
             <motion.div

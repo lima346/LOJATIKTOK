@@ -80,6 +80,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchProducts();
+    // Add a hardcoded test product to verify the update
+    setProducts(current => [
+      {
+        id: 'test-prod-1',
+        name: '🚀 Produto Teste Vercel',
+        description: 'Se você está vendo isso, as atualizações do código estão chegando!',
+        price: 0.01,
+        images: ['https://picsum.photos/seed/update/400/400'],
+        stock: 99
+      },
+      ...current
+    ]);
   }, []);
 
   const addProduct = async (product: Omit<Product, 'id'>) => {
@@ -133,8 +145,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     <StoreContext.Provider value={{
       products,
       isLoading,
-      addProduct, 
-      updateProduct, 
+      addProduct,
+      updateProduct,
       deleteProduct
     }}>
       {children}
